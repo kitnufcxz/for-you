@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Персональный романтический сайт — мини-вселенная для самой особенной">
+  <title>for you Любимка ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Marck+Script&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-mood="love">
+
+  <!-- Космический фон -->
+  <canvas id="cosmos-canvas" aria-hidden="true"></canvas>
+  <div class="stars-overlay" aria-hidden="true"></div>
+
+  <!-- Живые мысли сайта -->
+  <div id="live-thoughts" class="live-thoughts" aria-live="polite"></div>
+
+  <!-- Spotify-плеер -->
+  <div class="spotify-player" id="music-player">
+    <div class="spotify-player__main">
+      <div class="spotify-player__track">
+        <div class="spotify-player__cover" id="music-cover">
+          <img id="music-cover-img" src="" alt="" hidden>
+          <div class="spotify-cover-fallback" id="music-cover-fallback">♪</div>
+        </div>
+        <div class="spotify-player__meta">
+          <p class="spotify-player__title" id="music-title">for you</p>
+          <p class="spotify-player__artist" id="music-artist">Плейлист</p>
+        </div>
+      </div>
+
+      <div class="spotify-player__center">
+        <div class="spotify-player__controls">
+          <button class="spotify-skip-btn" id="music-prev" aria-label="Предыдущий трек">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="5" y="6" width="2" height="12" rx="0.5"/>
+              <path d="M17 6L10 12l7 6V6z"/>
+            </svg>
+          </button>
+          <button class="spotify-play-btn" id="music-toggle" aria-label="Воспроизвести">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <button class="spotify-skip-btn" id="music-next" aria-label="Следующий трек">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M7 6v12l7-6-7-6z"/>
+              <rect x="17" y="6" width="2" height="12" rx="0.5"/>
+            </svg>
+          </button>
+        </div>
+        <div class="spotify-player__timeline">
+          <span class="spotify-time" id="music-time-current">0:00</span>
+          <input type="range" class="spotify-progress" id="music-progress" min="0" max="1000" value="0" aria-label="Прогресс">
+          <span class="spotify-time" id="music-time-total">0:00</span>
+        </div>
+      </div>
+
+      <div class="spotify-player__viz">
+        <canvas id="audio-visualizer" width="80" height="32" aria-hidden="true"></canvas>
+      </div>
+    </div>
+    <audio id="bg-music" preload="metadata"></audio>
+  </div>
+
+  <!-- Контурные иконки секций -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-stats" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 20V11M12 20V4M19 20V14"/>
+    </symbol>
+    <symbol id="icon-heart-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 8.5l9 5.5 9-5.5"/>
+      <path d="M5 8v10a1 1 0 001 1h12a1 1 0 001-1V8"/>
+      <path d="M12 13.5c-1.2-1.4-3.5-1.4-4 0 .5 1.4 4 2.5 4 2.5s3.5-1.1 4-2.5c-.5-1.4-2.8-1.4-4 0z"/>
+    </symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="16" rx="2"/>
+      <path d="M3 10h18M8 3v4M16 3v4"/>
+      <path d="M8 14h2M14 14h2M8 18h2"/>
+    </symbol>
+    <symbol id="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 6a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H10l-4 3v-3H7a2 2 0 01-2-2V6z"/>
+      <path d="M8 10h8M8 13h5"/>
+    </symbol>
+    <symbol id="icon-letter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="6" width="18" height="14" rx="2"/>
+      <path d="M3 9l9 6 9-6"/>
+      <path d="M7 17h10"/>
+    </symbol>
+    <symbol id="icon-compliment" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 6c-1.5-2.5-5-2-5 2 0 3 5 6 5 6s5-3 5-6c0-4-3.5-4.5-5-2z"/>
+      <path d="M6 19c1.5 1 3.5 1.5 6 1.5s4.5-.5 6-1.5"/>
+    </symbol>
+    <symbol id="icon-constellation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="8" r="1.5"/>
+      <circle cx="18" cy="6" r="1.5"/>
+      <circle cx="12" cy="14" r="1.5"/>
+      <circle cx="7" cy="18" r="1.5"/>
+      <circle cx="19" cy="16" r="1.5"/>
+      <path d="M6 8l6 6M18 6l-6 8M12 14l-5 4M12 14l7 2"/>
+    </symbol>
+    <symbol id="icon-gallery" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2"/>
+      <circle cx="9" cy="11" r="2"/>
+      <path d="M3 16l5-4 4 3 3-2 6 5"/>
+    </symbol>
+    <symbol id="icon-list-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 5H5a1 1 0 00-1 1v14a1 1 0 001 1h4"/>
+      <path d="M9 5h6a1 1 0 011 1v2"/>
+      <path d="M9 5V3a1 1 0 011-1h4a1 1 0 011 1v2"/>
+      <path d="M13 12h4M13 16h4M9 12h.01M9 16h.01"/>
+      <path d="M12 20c-1.5-2-4-1.5-4 .5s.5 2.5 4 4.5 4-2.5 4-4.5-2.5-2.5-4-.5z"/>
+    </symbol>
+    <symbol id="icon-manual" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 4h8a2 2 0 012 2v14l-4-2-4 2V6a2 2 0 012-2z"/>
+      <path d="M9 9h6M9 13h4"/>
+      <path d="M12 3v2"/>
+    </symbol>
+    <symbol id="icon-capsule" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 10a7 7 0 0114 0v5a3 3 0 01-3 3H8a3 3 0 01-3-3v-5z"/>
+      <path d="M8 10h8"/>
+      <path d="M9 7V5M15 7V5"/>
+      <circle cx="12" cy="13" r="1.5"/>
+    </symbol>
+    <symbol id="icon-heart-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 7.5c-1.2-1.8-3.8-1.5-4 .5s.6 3.5 4 5.5 4-3.5 4-5.5-1.8-2.3-4-.5z"/>
+      <path d="M18 3l.6 1.4L20 5l-1.4.6L18 7l-.6-1.4L16 5l1.4-.6z"/>
+      <path d="M5 20c2-1 4-1.5 7-1.5s5 .5 7 1.5"/>
+    </symbol>
+    <symbol id="icon-satellite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 20l7-7"/>
+      <path d="M14 4l6 6-3 3-6-6 3-3z"/>
+      <circle cx="18" cy="6" r="2"/>
+      <path d="M3 21l2-2"/>
+      <path d="M8 16l-1 3 3-1"/>
+    </symbol>
+  </svg>
+
+  <!-- Навигация -->
+  <nav class="nav" id="nav">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Меню">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#hero">Главная</a></li>
+      <li><a href="#stats">Характеристики</a></li>
+      <li><a href="#reasons">Причины</a></li>
+      <li><a href="#dates">Даты</a></li>
+      <li><a href="#chat">Сообщения</a></li>
+      <li><a href="#letter">Письмо</a></li>
+      <li><a href="#compliments">Комплименты</a></li>
+      <li><a href="#cosmos">Космос</a></li>
+      <li><a href="#gallery">Галерея</a></li>
+      <li><a href="#from-heart">Рабочий моментик</a></li>
+      <li><a href="#her-list">Список</a></li>
+      <li><a href="#care-manual">Инструкция</a></li>
+      <li><a href="#time-capsule">Капсула</a></li>
+      <li><a href="#route">Маршрут</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- 1. Главная -->
+    <section id="hero" class="section hero">
+      <div class="hero-glow"></div>
+      <p class="hero-badge" id="hero-badge">✦ только для тебя ✦</p>
+      <h1 class="hero-title">
+        <span id="hero-line1"></span><br>
+        <span class="hero-name" id="her-name-title">…</span>
+      </h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Маленькая вселенная, созданная для самого важного человека
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="beauty-btn">
+          Нажми, если ты самая красивая
+        </button>
+        <p class="beauty-response hidden" id="beauty-response">
+          Я знал, что ты нажмёшь правильно ❤️
+        </p>
+      </div>
+
+      <!-- Настроение -->
+      <div class="mood-picker" id="mood-picker">
+        <p class="mood-label">Как ты себя чувствуешь?</p>
+        <div class="mood-buttons">
+          <button class="mood-btn" data-mood="joy" data-emoji="😊">Радость</button>
+          <button class="mood-btn" data-mood="miss" data-emoji="😴">Скучаю</button>
+          <button class="mood-btn" data-mood="love" data-emoji="❤️">Люблю тебя</button>
+        </div>
+        <p class="mood-response" id="mood-response"></p>
+      </div>
+    </section>
+
+    <!-- 2. Характеристики -->
+    <section id="stats" class="section stats-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-stats"/></svg><span>Характеристики</span></h2>
+      <div class="stats-grid" id="stats-grid"></div>
+    </section>
+
+    <!-- 3. Причины -->
+    <section id="reasons" class="section reasons-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-heart-mail"/></svg><span>Причины, почему я тебя люблю</span></h2>
+      <div class="reasons-carousel">
+        <button class="carousel-btn prev" id="reason-prev" aria-label="Предыдущая">‹</button>
+        <div class="reason-card-wrapper">
+          <div class="reason-card" id="reason-card">
+            <span class="reason-number" id="reason-number">1 / 50</span>
+            <p class="reason-text" id="reason-text"></p>
+          </div>
+        </div>
+        <button class="carousel-btn next" id="reason-next" aria-label="Следующая">›</button>
+      </div>
+      <div class="reason-dots" id="reason-dots"></div>
+    </section>
+
+    <!-- 4. Важные даты -->
+    <section id="dates" class="section dates-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-calendar"/></svg><span>Важные даты</span></h2>
+      <div class="counter-box" id="counter-box">
+        <p class="counter-label">Мы вместе уже:</p>
+        <div class="counter-values">
+          <span><strong id="days-count">0</strong> дней</span>
+          <span><strong id="hours-count">0</strong> часов</span>
+          <span><strong id="minutes-count">0</strong> минут</span>
+          <span><strong id="seconds-count">0</strong> секунд</span>
+        </div>
+        <p class="counter-whisper">Я очень боюсь тебя потерять — поэтому ценю каждую секунду с тобой</p>
+      </div>
+      <ul class="dates-list" id="dates-list"></ul>
+    </section>
+
+    <!-- 7. Живые сообщения -->
+    <section id="chat" class="section chat-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-chat"/></svg><span>Живые сообщения</span></h2>
+      <div class="chat-container" id="chat-container"></div>
+    </section>
+
+    <!-- 8. Письмо -->
+    <section id="letter" class="section letter-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-letter"/></svg><span>Письмо для тебя</span></h2>
+      <div class="letter-paper">
+        <p class="letter-text" id="letter-text"></p>
+        <span class="letter-cursor" id="letter-cursor">|</span>
+        <button class="btn btn-soft" id="letter-replay">Прочитать снова</button>
+      </div>
+    </section>
+
+    <!-- 10. Генератор комплиментов -->
+    <section id="compliments" class="section compliments-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-compliment"/></svg><span>Комплименты</span></h2>
+      <button class="btn btn-primary" id="compliment-btn">
+        Сказать тебе что-то приятное
+      </button>
+      <p class="compliment-display" id="compliment-display"></p>
+    </section>
+
+    <!-- 11. Космическая сцена — созвездие Вика -->
+    <section id="cosmos" class="section cosmos-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-constellation"/></svg><span id="cosmos-title">Созвездие</span></h2>
+      <p class="cosmos-hint" id="cosmos-hint"></p>
+
+      <div class="constellation-card">
+        <div class="constellation-sky">
+          <p class="constellation-loading" id="constellation-loading">рисуем звёзды…</p>
+          <svg class="constellation-svg" id="constellation-svg" viewBox="0 0 400 200" aria-label="Созвездие Вика">
+            <defs>
+              <filter id="star-glow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="star-glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="3.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="line-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <radialGradient id="star-gradient">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="40%" stop-color="#ede8ff"/>
+                <stop offset="100%" stop-color="#c9b8e8"/>
+              </radialGradient>
+            </defs>
+            <g id="constellation-bg-stars"></g>
+            <g id="constellation-lines"></g>
+            <g id="constellation-stars"></g>
+          </svg>
+        </div>
+      </div>
+
+      <p class="star-compliment" id="star-compliment"></p>
+    </section>
+
+    <!-- 12. Галерея -->
+    <section id="gallery" class="section gallery-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-gallery"/></svg><span>Галерея</span></h2>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- 13. От сердца — гифка и эмоции о проекте -->
+    <section id="from-heart" class="section from-heart-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-heart-spark"/></svg><span>Рабочий моментик</span></h2>
+      <div class="from-heart-card">
+        <div class="from-heart-media">
+          <img id="from-heart-gif" src="" alt="Момент, который хочу сохранить" loading="eager">
+          <p class="from-heart-media-hint" id="from-heart-gif-hint" hidden>Положи гифку в assets/ja.gif</p>
+        </div>
+        <div class="from-heart-body">
+          <p class="from-heart-badge" id="from-heart-badge"></p>
+          <p class="from-heart-text" id="from-heart-text"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. Список — что нравится, что нет, мечты -->
+    <section id="her-list" class="section her-list-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-list-heart"/></svg><span>Я запоминаю</span></h2>
+      <p class="her-list-intro" id="her-list-intro"></p>
+      <div class="ring-size-showcase hidden" id="ring-size-showcase">
+        <div class="ring-size-jewel" aria-hidden="true">
+          <svg class="ring-size-svg" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="ring-metal" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f0e8d8"/>
+                <stop offset="40%" stop-color="#d4c4e8"/>
+                <stop offset="100%" stop-color="#a894d4"/>
+              </linearGradient>
+            </defs>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="url(#ring-metal)" stroke-width="10"/>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="3" stroke-dasharray="4 8"/>
+            <ellipse cx="44" cy="38" rx="12" ry="6" fill="rgba(255,255,255,0.35)" transform="rotate(-30 44 38)"/>
+          </svg>
+          <span class="ring-size-number" id="ring-size-number"></span>
+        </div>
+        <div class="ring-size-caption">
+          <span class="ring-size-label">размер кольца</span>
+          <span class="ring-size-note" id="ring-size-note"></span>
+        </div>
+      </div>
+      <div class="her-list-grid" id="her-list-grid"></div>
+    </section>
+
+    <!-- 15. Инструкция на «эти дни» -->
+    <section id="care-manual" class="section care-manual-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-manual"/></svg><span>Инструкция</span></h2>
+      <p class="care-manual-badge" id="care-manual-badge"></p>
+      <div class="care-manual-card">
+        <p class="care-manual-preface" id="care-manual-preface"></p>
+        <h3 class="care-manual-subtitle" id="care-manual-subtitle"></h3>
+        <ul class="care-manual-steps" id="care-manual-steps"></ul>
+        <h3 class="care-manual-rules-title">И ещё пара важных пунктов:</h3>
+        <ol class="care-manual-rules" id="care-manual-rules"></ol>
+        <div class="care-manual-check">
+          <p class="care-manual-question" id="care-manual-question"></p>
+          <p class="care-manual-answer" id="care-manual-answer"></p>
+        </div>
+        <p class="care-manual-sign" id="care-manual-sign"></p>
+      </div>
+    </section>
+
+    <!-- 16. Капсула времени -->
+    <section id="time-capsule" class="section time-capsule-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-capsule"/></svg><span>Капсула времени</span></h2>
+      <p class="capsule-intro">Послание из прошлого — откроется в твой особенный день</p>
+
+      <div class="capsule-scene" id="capsule-scene">
+        <svg class="capsule-art" viewBox="0 0 300 400" aria-hidden="true">
+          <defs>
+            <linearGradient id="cap-body" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f0e6c8"/>
+              <stop offset="35%" stop-color="#d4c4e8"/>
+              <stop offset="70%" stop-color="#b8a0d4"/>
+              <stop offset="100%" stop-color="#9a84b8"/>
+            </linearGradient>
+            <linearGradient id="cap-shine" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0.55"/>
+              <stop offset="45%" stop-color="#fff" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="cap-lid-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#c9b8e8"/>
+              <stop offset="50%" stop-color="#e8dcc0"/>
+              <stop offset="100%" stop-color="#a894d4"/>
+            </linearGradient>
+            <radialGradient id="cap-glow" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" stop-color="#e8c4f0" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#e8c4f0" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="cap-soft-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <ellipse cx="150" cy="355" rx="72" ry="14" fill="rgba(140,120,168,0.2)"/>
+
+          <g class="capsule-glow-ring" filter="url(#cap-soft-glow)">
+            <ellipse cx="150" cy="210" rx="95" ry="120" fill="url(#cap-glow)"/>
+          </g>
+
+          <g class="capsule-sparkles">
+            <circle cx="55" cy="90" r="2" fill="#fff" opacity="0.7"/>
+            <circle cx="245" cy="120" r="1.5" fill="#fff" opacity="0.5"/>
+            <circle cx="230" cy="280" r="2" fill="#e8c4dc" opacity="0.6"/>
+            <circle cx="70" cy="250" r="1.5" fill="#e8c4dc" opacity="0.5"/>
+            <path d="M40 160l4 8-8-2 8-2-4 8z" fill="#fff" opacity="0.4"/>
+            <path d="M260 200l3 6-6-1.5 6-1.5-3 6z" fill="#fff" opacity="0.35"/>
+          </g>
+
+          <g class="capsule-base">
+            <rect x="88" y="155" width="124" height="168" rx="18" fill="url(#cap-body)" stroke="#8b78a8" stroke-width="2"/>
+            <rect x="96" y="163" width="28" height="152" rx="8" fill="url(#cap-shine)" opacity="0.7"/>
+            <line x1="88" y1="195" x2="212" y2="195" stroke="#8b78a8" stroke-width="1.5" opacity="0.5"/>
+            <line x1="88" y1="235" x2="212" y2="235" stroke="#8b78a8" stroke-width="1.5" opacity="0.5"/>
+            <line x1="88" y1="275" x2="212" y2="275" stroke="#8b78a8" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="108" cy="195" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+            <circle cx="192" cy="195" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+            <circle cx="108" cy="235" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+            <circle cx="192" cy="235" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+            <circle cx="108" cy="275" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+            <circle cx="192" cy="275" r="4" fill="#7a6898" stroke="#5c4a72" stroke-width="1"/>
+
+            <g class="capsule-seal">
+              <circle cx="150" cy="215" r="28" fill="#8b78c0" stroke="#6a5a88" stroke-width="2"/>
+              <circle cx="150" cy="215" r="22" fill="none" stroke="#e8dcc8" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <path d="M150 202c-4-5-12-4-12 2.5 0 5 12 9 12 9s12-4 12-9c0-6.5-8-7.5-12-2.5z" fill="#f0e8f8" stroke="#d4899f" stroke-width="1.2"/>
+            </g>
+
+            <rect x="105" y="300" width="90" height="22" rx="6" fill="rgba(74,66,88,0.85)"/>
+            <text x="150" y="315" text-anchor="middle" fill="#f5f0ff" font-family="Nunito, sans-serif" font-size="11" font-weight="600" letter-spacing="1">09 · 07 · 2026</text>
+          </g>
+
+          <g class="capsule-lid">
+            <ellipse cx="150" cy="155" rx="62" ry="22" fill="url(#cap-lid-grad)" stroke="#8b78a8" stroke-width="2"/>
+            <path d="M88 155 Q150 95 212 155 Z" fill="url(#cap-lid-grad)" stroke="#8b78a8" stroke-width="2"/>
+            <ellipse cx="150" cy="118" rx="38" ry="14" fill="url(#cap-shine)" opacity="0.45"/>
+            <rect x="140" y="148" width="20" height="14" rx="3" fill="#7a6898"/>
+          </g>
+
+          <g class="capsule-scroll" opacity="0">
+            <path d="M125 155 Q150 130 175 155 L170 175 Q150 160 130 175 Z" fill="#fff9f0" stroke="#d4c4b0" stroke-width="1"/>
+          </g>
+        </svg>
+
+        <p class="capsule-countdown" id="capsule-countdown"></p>
+        <p class="capsule-sealed-hint" id="capsule-sealed-hint"></p>
+
+        <div class="capsule-letter hidden" id="capsule-letter">
+          <p class="capsule-letter-text" id="capsule-message-text"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. Маршрут -->
+    <section id="route" class="section route-section">
+      <h2 class="section-title"><svg class="section-icon"><use href="#icon-satellite"/></svg><span>Навигация к тебе</span></h2>
+
+      <div class="route-gps">
+        <div class="route-gps-header">
+          <span class="route-gps-badge">✦ hand-drawn GPS ✦</span>
+          <div class="route-gps-stats">
+            <span id="route-distance">—</span>
+            <span id="route-duration">—</span>
+          </div>
+        </div>
+
+        <div class="route-canvas-wrap">
+          <canvas id="route-canvas" aria-label="Рисованная карта маршрута"></canvas>
+          <div class="route-pin route-pin-a" id="route-pin-a"><span>A</span></div>
+          <div class="route-pin route-pin-b" id="route-pin-b"><span>B</span></div>
+          <div class="route-traveler" id="route-traveler">❤️</div>
+        </div>
+
+        <div class="route-labels">
+          <div class="route-label from">
+            <span class="route-label-dot"></span>
+            <div>
+              <span class="route-label-tag">Старт</span>
+              <span class="route-place" id="route-from"></span>
+            </div>
+          </div>
+          <div class="route-label to">
+            <span class="route-label-dot"></span>
+            <div>
+              <span class="route-label-tag">Финиш</span>
+              <span class="route-place" id="route-to"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="route-quote">расстояние не важно, если человек важен ❤️</p>
+      <p class="route-quote-soft">Я очень боюсь тебя потерять — поэтому каждый путь к тебе для меня самый важный</p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Сделано с любовью · <span id="footer-name"></span> ©</p>
+    <p class="footer-secret" id="footer-secret" title="…">♥</p>
+  </footer>
+
+  <!-- Пасхалка: секретное сообщение -->
+  <div class="easter-modal hidden" id="easter-modal">
+    <div class="easter-content">
+      <button class="easter-close" id="easter-close">×</button>
+      <p id="easter-message"></p>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/route-data.js"></script>
+  <script src="js/route-map.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+  <script src="js/constellation.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
